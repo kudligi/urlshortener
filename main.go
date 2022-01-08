@@ -8,7 +8,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-  dataService := &InMemoryService{make(map[string]string)}
+  dataService := &InMemoryService{make(map[string]string), make(map[string]string)}
   router := &Router{dataService}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")

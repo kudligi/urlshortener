@@ -11,11 +11,11 @@ import (
 )
 
 func TestAddShortUrlSuccess(t *testing.T){
-  store := &InMemoryService{make(map[string]string)}
+  store := &InMemoryService{make(map[string]string), make(map[string]string)}
 
-  err := store.SaveShortUrl("short.com/1", "google.com")
+  short, err := store.GenerateShortUrlAndSave("google.com")
   assert.Nil(t, err)
-  longUrl, err := store.GetLongUrl("short.com/1")
+  longUrl, err := store.GetLongUrl(short)
   assert.Nil(t, err)
 
   assert.Equal(t, "google.com", longUrl, "Long Url incorrect")
@@ -40,7 +40,7 @@ func TestShortenEndpoint(t *testing.T){
 func GetRouter() *mux.Router {
   r := mux.NewRouter()
 
-  dataService := &InMemoryService{make(map[string]string)}
+  dataService := &InMemoryService{make(map[string]string),make(map[string]string)}
   router := &Router{dataService}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")

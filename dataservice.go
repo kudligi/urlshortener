@@ -5,26 +5,34 @@ import (
 )
 
 type DataService interface {
-  SaveShortUrl(string, string) error
+  GenerateShortUrlAndSave(string) (string, error)
   GetLongUrl(string) (string, error)
 }
 
 type InMemoryService struct {
-  Store map[string]string
+  LongToShortMap map[string]string
+  ShortToLongMap map[string]string
 }
 
-func (s *InMemoryService) SaveShortUrl(short string,long string) error {
-  if _, ok := s.Store[short]; ok {
-    return fmt.Errorf("shortUrl %s already in use ", short)
-  }
-  s.Store[short] = long
+func (s *InMemoryService) saveShortUrl(short string,long string) error {
+  s.ShortToLongMap[short] = long
+  s.LongToShortMap[long] = short
   return nil
 }
 
 func (s *InMemoryService) GetLongUrl(short string) (string, error){
-  if a, ok := s.Store[short]; ok {
+  if a, ok := s.ShortToLongMap[short]; ok {
     return a, nil
   } else {
     return "", fmt.Errorf("shortUrl %s does not exist in store", short)
   }
+}
+
+func (s *InMemoryService) GenerateShortUrlAndSave(longUrl string) (string, error){
+  if shortUrl, ok := s.LongToShortMap[longUrl]; ok {
+    return shortUrl, nil
+  }
+  shortUrl := GetRandomShortUrl()
+  s.saveShortUrl(shortUrl, longUrl)
+  return shortUrl, nil
 }

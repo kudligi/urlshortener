@@ -28,8 +28,7 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
   if err != nil{
     panic(err)
   }
-  shortUrl := GetRandomShortUrl()
-  err = h.DataStore.SaveShortUrl(shortUrl, requestBody.Url)
+  shortUrl, err := h.DataStore.GenerateShortUrlAndSave(requestBody.Url)
 
   if err != nil{
     panic(err)
