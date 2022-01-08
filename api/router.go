@@ -18,6 +18,11 @@ type HandlerRequest struct {
   Url string `json:"url"`
 }
 
+type HandlerResponse struct {
+  LongUrl string `json:"long_url"`
+  ShortUrl string `json:"short_url"`
+}
+
 //handler for POST /shorten
 func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
   var requestBody HandlerRequest
@@ -34,8 +39,10 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
   if err != nil{
     panic(err)
   }
-
-  fmt.Fprintf(w, shortUrl)
+  payload := HandlerResponse{requestBody.Url, shortUrl}
+  response, _ := json.Marshal(payload)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(response)
 }
 
 //handler for POST /lengthen
@@ -54,9 +61,10 @@ func (h *Router) LengthenUrl(w http.ResponseWriter, r *http.Request){
   if err != nil{
     panic(err)
   }
-
-  fmt.Println("longUrl is", longUrl)
-  fmt.Fprintf(w, longUrl)
+  payload := HandlerResponse{longUrl, requestBody.Url}
+  response, _ := json.Marshal(payload)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(response)
 }
 
 func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
