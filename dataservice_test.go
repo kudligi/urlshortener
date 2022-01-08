@@ -2,20 +2,16 @@ package main
 
 import (
   "testing"
+  "github.com/stretchr/testify/assert"
 )
 
 func TestAddShortUrlSuccess(t *testing.T){
   store := &InMemoryService{make(map[string]string)}
 
-  err := store.SaveShortUrl("short.com/i", "google.com")
-
-  if err != nil {
-    t.Errorf("got error %e while saving shortUrl", err)
-  }
-
-  longUrl, err := store.GetLongUrl("short.com/i")
-
-  if longUrl != "google.com" || err != nil {
-    t.Errorf("get LongUrl failed")
-  }
+  err := store.SaveShortUrl("short.com/1", "google.com")
+  Assert.Nil(t, err)
+  longUrl, err := store.GetLongUrl("short.com/1")
+  Assert.Nil(t, err)
+  
+  assert.Equal(t, "google.com", longUrl, "Long Url incorrect")
 }
