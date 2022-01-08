@@ -1,8 +1,10 @@
 package main
 
 import (
+	"os"
   "net/http"
   "github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 	"github.com/kudligi/urlshortener/data"
 	"github.com/kudligi/urlshortener/api"
 )
@@ -17,5 +19,7 @@ func main() {
   r.HandleFunc("/lengthen", router.LengthenUrl).Methods("POST")
 	r.HandleFunc("/{shortUrl}", router.Redirect).Methods("GET")
 
-  http.ListenAndServe(":9090", r)
+	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
+
+  http.ListenAndServe(":9090", loggedRouter)
 }
