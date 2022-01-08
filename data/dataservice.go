@@ -1,7 +1,8 @@
-package main
+package data
 
 import (
   "fmt"
+  "github.com/kudligi/urlshortener/utility"
 )
 
 type DataService interface {
@@ -32,7 +33,7 @@ func (s *InMemoryService) GenerateShortUrlAndSave(longUrl string) (string, error
   if shortUrl, ok := s.LongToShortMap[longUrl]; ok {
     return shortUrl, nil
   }
-  shortUrl := GetRandomShortUrl()
+  shortUrl := utility.GetRandomShortUrl()
   s.saveShortUrl(shortUrl, longUrl)
   return shortUrl, nil
 }

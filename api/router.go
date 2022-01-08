@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
   "net/http"
@@ -6,11 +6,12 @@ import (
   "encoding/json"
   "io/ioutil"
   "github.com/gorilla/mux"
+  "github.com/kudligi/urlshortener/data"
 )
 
 
 type Router struct {
-  DataStore DataService
+  DataStore data.DataService
 }
 
 type HandlerRequest struct {
@@ -34,7 +35,6 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
     panic(err)
   }
 
-  fmt.Println("cretated shortUrl", shortUrl)
   fmt.Fprintf(w, shortUrl)
 }
 

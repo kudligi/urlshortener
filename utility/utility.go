@@ -1,4 +1,4 @@
-package main
+package utility
 
 import (
   "github.com/btcsuite/btcutil/base58"
@@ -14,5 +14,5 @@ func randomBytes() []byte {
 func GetRandomShortUrl() (string) {
   data := randomBytes()
 	encoded := base58.Encode(data)
-  return encoded[:8] // move value to environment. 
+  return encoded[:8] // move value to environment.
 }

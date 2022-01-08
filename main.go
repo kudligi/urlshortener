@@ -3,13 +3,15 @@ package main
 import (
   "net/http"
   "github.com/gorilla/mux"
+	"github.com/kudligi/urlshortener/data"
+	"github.com/kudligi/urlshortener/api"
 )
 
 func main() {
 	r := mux.NewRouter()
 
-  dataService := &InMemoryService{make(map[string]string), make(map[string]string)}
-  router := &Router{dataService}
+  var dataService data.DataService = &data.InMemoryService{make(map[string]string), make(map[string]string)}
+  router := &api.Router{dataService}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")
   r.HandleFunc("/lengthen", router.LengthenUrl).Methods("POST")
