@@ -4,6 +4,7 @@ import (
   "testing"
   "github.com/stretchr/testify/assert"
   "github.com/kudligi/urlshortener/utility"
+  "sync"
 )
 
 func TestAddShortUrlSuccessV2(t *testing.T){
