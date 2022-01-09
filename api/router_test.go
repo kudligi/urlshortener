@@ -5,10 +5,12 @@ import (
   "net/http/httptest"
   "github.com/gorilla/mux"
 	"github.com/kudligi/urlshortener/data"
+	"github.com/kudligi/urlshortener/utility"
   "testing"
   "github.com/stretchr/testify/assert"
   "encoding/json"
   "bytes"
+  "sync"
 )
 
 
@@ -26,8 +28,10 @@ func TestShortenEndpoint(t *testing.T){
 func GetRouter() *mux.Router {
   r := mux.NewRouter()
 
-  dataService := &data.InMemoryMapService{make(map[string]string),make(map[string]string)}
-  router := &Router{dataService}
+  store := data.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+  service := data.DataServiceV2{&store, utility.GetRandomShortUrl}
+
+  router := &Router{service}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")
   r.HandleFunc("/lengthen", router.LengthenUrl).Methods("POST")

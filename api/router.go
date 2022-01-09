@@ -12,7 +12,7 @@ import (
 
 
 type Router struct {
-  DataStore data.DataService
+  DataService data.DataServiceV2
 }
 
 type HandlerRequest struct {
@@ -44,7 +44,7 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
   if err != nil{
     panic(err)
   }
-  shortUrl, err := h.DataStore.GenerateShortUrlAndSave(requestBody.Url)
+  shortUrl, err := h.DataService.GenerateShortUrl(requestBody.Url)
 
   if err != nil{
     panic(err)
@@ -66,7 +66,7 @@ func (h *Router) LengthenUrl(w http.ResponseWriter, r *http.Request){
   if err != nil{
     panic(err)
   }
-  longUrl, err := h.DataStore.GetLongUrl(requestBody.Url)
+  longUrl, err := h.DataService.GetLongUrl(requestBody.Url)
 
   if err != nil{
     panic(err)
@@ -83,10 +83,10 @@ func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
     if !ok {
         fmt.Println("shortUrl is missing in parameters")
     }
-  longUrl, _ := h.DataStore.GetLongUrl(shortUrl)
+  longUrl, _ := h.DataService.GetLongUrl(shortUrl)
   http.Redirect(w, r, longUrl, http.StatusSeeOther)
 }
 
-func (h *Router) LogAll(w http.ResponseWriter, r *http.Request){
-  h.DataStore.LogAll()
-}
+// func (h *Router) LogAll(w http.ResponseWriter, r *http.Request){
+//   h.DataService.LogAll()
+// }

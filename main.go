@@ -7,20 +7,21 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/kudligi/urlshortener/data"
 	"github.com/kudligi/urlshortener/api"
+	"github.com/kudligi/urlshortener/utility"
 	"sync"
 )
 
 func main() {
 	r := mux.NewRouter()
+	store := data.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+  service := data.DataServiceV2{&store, utility.GetRandomShortUrl}
 
-  var dataService data.DataService = &data.InMemoryConcurrentMapService{make(map[string]string), new(sync.Map)}
-	// var dataService data.DataService = &data.InMemoryService{make(map[string]string), make(map[string]string)}
-  router := &api.Router{dataService}
+	router := &api.Router{service}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")
   r.HandleFunc("/lengthen", router.LengthenUrl).Methods("POST")
 	r.HandleFunc("/{shortUrl}", router.Redirect).Methods("GET")
-	r.HandleFunc("/", router.LogAll).Methods("GET")
+	// r.HandleFunc("/", router.LogAll).Methods("GET")
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
 
