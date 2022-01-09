@@ -1,10 +1,10 @@
 version: "3.9"
 services:
   web:
-    # image: kudligi97/urlshortener:main
-    build: .
+    image: kudligi97/urlshortener:distributed-latest
+    # build: .
     ports:
-      - "5000"
+      - "9090"
     volumes:
       - ./persist:/go/app/persist
     depends_on:
@@ -13,6 +13,8 @@ services:
     image: redis
     ports:
       - "6379:6379"
+    volumes:
+      - ./persist:/data
   nginx:
     image: nginx:latest
     volumes:
@@ -20,4 +22,4 @@ services:
     depends_on:
       - web
     ports:
-      - "9090:9090"
+      - "4000:4000"

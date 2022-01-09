@@ -9,7 +9,7 @@ COPY go.sum ./
 RUN go mod download
 
 ENV SHORT_URL_SIZE=8
-ENV APP_DOMAIN="http://localhost:9090/"
+ENV APP_DOMAIN="http://localhost:4000/"
 
 
 COPY ./ ./
