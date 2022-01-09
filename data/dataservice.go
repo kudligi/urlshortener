@@ -49,3 +49,7 @@ func (s *DataServiceV2) GetLongUrl(shortUrl string) (string, error) {
   longUrl, _ := s.DataStore.CheckGetVal4ShortUrl(shortUrl)
   return longUrl, nil
 }
+
+func (s *DataServiceV2) LogAll() {
+  s.DataStore.LogAll()
+}

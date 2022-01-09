@@ -8,6 +8,8 @@ import (
   "github.com/gorilla/mux"
   "github.com/kudligi/urlshortener/data"
   "gopkg.in/go-playground/validator.v9"
+  "math/rand"
+  "strconv"
 )
 
 
@@ -87,6 +89,20 @@ func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
   http.Redirect(w, r, longUrl, http.StatusSeeOther)
 }
 
-// func (h *Router) LogAll(w http.ResponseWriter, r *http.Request){
-//   h.DataService.LogAll()
-// }
+func (h *Router) ShortenUrlBenchmark(w http.ResponseWriter, r *http.Request){
+  randomness := strconv.Itoa(rand.Intn(100000))
+  longUrl := "https://www.infracloud.io/cloud-native-open-source-contributions" + randomness + "/"
+  shortUrl, err := h.DataService.GenerateShortUrl(longUrl)
+
+  if err != nil{
+    panic(err)
+  }
+  payload := HandlerResponse{longUrl, shortUrl}
+  response, _ := json.Marshal(payload)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(response)
+}
+
+func (h *Router) LogAll(w http.ResponseWriter, r *http.Request){
+  h.DataService.LogAll()
+}
