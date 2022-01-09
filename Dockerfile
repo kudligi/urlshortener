@@ -8,10 +8,14 @@ COPY go.sum ./
 
 RUN go mod download
 
+ENV SHORT_URL_SIZE=8
+ENV APP_DOMAIN="http://localhost:9090/"
+
+
 COPY ./ ./
 
 RUN go build -o /server
 
-EXPOSE 8080
+EXPOSE 9090
 
 CMD ["/server"]

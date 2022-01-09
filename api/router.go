@@ -2,14 +2,13 @@ package api
 
 import (
   "net/http"
-  "fmt"
   "encoding/json"
-  "io/ioutil"
   "github.com/gorilla/mux"
   "github.com/kudligi/urlshortener/data"
   "gopkg.in/go-playground/validator.v9"
   "math/rand"
   "strconv"
+  "os"
 )
 
 
@@ -17,41 +16,51 @@ type Router struct {
   DataService data.DataServiceV2
 }
 
-type HandlerRequest struct {
-  Url string `json:"url" validate:"required,url"`
-}
-
-type HandlerResponse struct {
-  LongUrl string `json:"long_url"`
-  ShortUrl string `json:"short_url"`
-}
-
 var (
     v = validator.New()
+    domain string
 )
 
+func init(){
+  _, ok := os.LookupEnv("APP_DOMAIN")
+  if !ok {
+    panic("APP_DOMAIN not available in env")
+  }
+  domain = os.Getenv("APP_DOMAIN")
+}
+
+func parseAndValidate(b interface{}, w http.ResponseWriter, r *http.Request) bool {
+  err := json.NewDecoder(r.Body).Decode(&b)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusBadRequest)
+    return false
+  }
+
+  err = v.Struct(b)
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusBadRequest)
+    return false
+  }
+  return true
+}
 
 //handler for POST /shorten
 func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
-  var requestBody HandlerRequest
-  body, err := ioutil.ReadAll(r.Body)
-  if err != nil{
-    panic(err)
-  }
-  err = json.Unmarshal(body, &requestBody)
-  if err != nil{
-    panic(err)
-  }
-  err = v.Struct(requestBody)
-  if err != nil{
-    panic(err)
-  }
-  shortUrl, err := h.DataService.GenerateShortUrl(requestBody.Url)
+  var requestBody ShortenRequest
 
-  if err != nil{
-    panic(err)
+  ok := parseAndValidate(&requestBody, w, r)
+
+  if !ok {
+    return
   }
-  payload := HandlerResponse{requestBody.Url, shortUrl}
+
+  shortUrl, err := h.DataService.GenerateShortUrl(requestBody.LongUrl)
+  shortUrl = domain + shortUrl
+  if err != nil{
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+  payload := UrlPairResponse{requestBody.LongUrl, shortUrl}
   response, _ := json.Marshal(payload)
   w.Header().Set("Content-Type", "application/json")
   w.Write(response)
@@ -59,21 +68,17 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
 
 //handler for POST /lengthen
 func (h *Router) LengthenUrl(w http.ResponseWriter, r *http.Request){
-  var requestBody HandlerRequest
-  body, err := ioutil.ReadAll(r.Body)
-  if err != nil{
-    panic(err)
+  var requestBody LengthenRequest
+  ok := parseAndValidate(&requestBody, w, r)
+  if !ok {
+    return
   }
-  err = json.Unmarshal(body, &requestBody)
-  if err != nil{
-    panic(err)
-  }
-  longUrl, err := h.DataService.GetLongUrl(requestBody.Url)
+  longUrl, err := h.DataService.GetLongUrl(requestBody.ShortUrl)
 
   if err != nil{
     panic(err)
   }
-  payload := HandlerResponse{longUrl, requestBody.Url}
+  payload := UrlPairResponse{longUrl, requestBody.ShortUrl}
   response, _ := json.Marshal(payload)
   w.Header().Set("Content-Type", "application/json")
   w.Write(response)
@@ -81,10 +86,7 @@ func (h *Router) LengthenUrl(w http.ResponseWriter, r *http.Request){
 
 func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
   vars := mux.Vars(r)
-  shortUrl, ok := vars["shortUrl"]
-    if !ok {
-        fmt.Println("shortUrl is missing in parameters")
-    }
+  shortUrl := vars["shortUrl"]
   longUrl, _ := h.DataService.GetLongUrl(shortUrl)
   http.Redirect(w, r, longUrl, http.StatusSeeOther)
 }
@@ -92,12 +94,8 @@ func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
 func (h *Router) ShortenUrlBenchmark(w http.ResponseWriter, r *http.Request){
   randomness := strconv.Itoa(rand.Intn(100000))
   longUrl := "https://www.infracloud.io/cloud-native-open-source-contributions" + randomness + "/"
-  shortUrl, err := h.DataService.GenerateShortUrl(longUrl)
-
-  if err != nil{
-    panic(err)
-  }
-  payload := HandlerResponse{longUrl, shortUrl}
+  shortUrl, _ := h.DataService.GenerateShortUrl(longUrl)
+  payload := UrlPairResponse{longUrl, shortUrl}
   response, _ := json.Marshal(payload)
   w.Header().Set("Content-Type", "application/json")
   w.Write(response)

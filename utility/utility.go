@@ -5,7 +5,11 @@ import (
   crypto_rand "crypto/rand"
   "encoding/binary"
   math_rand "math/rand"
+  "strconv"
+  "os"
 )
+
+var urlSize int
 
 func init(){
   var b [8]byte
@@ -14,6 +18,12 @@ func init(){
         panic("cannot seed math/rand package with cryptographically secure random number generator")
     }
     math_rand.Seed(int64(binary.LittleEndian.Uint64(b[:])))
+
+    size, ok := os.LookupEnv("SHORT_URL_SIZE")
+    if !ok {
+      panic("SHORT_URL_SIZE not available in env")
+    }
+    urlSize, _ = strconv.Atoi(size)
 }
 
 func randomBytes() []byte {
@@ -25,5 +35,5 @@ func randomBytes() []byte {
 func GetRandomShortUrl() (string) {
   data := randomBytes()
 	encoded := base58.Encode(data)
-  return encoded[:8] // move value to environment.
+  return encoded[:urlSize] // move value to environment.
 }

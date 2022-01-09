@@ -15,7 +15,7 @@ import (
 
 
 func TestShortenEndpoint(t *testing.T){
-  payload := HandlerRequest{"https://www.infracloud.io/cloud-native-open-source-contributions/"}
+  payload := ShortenRequest{"https://www.infracloud.io/cloud-native-open-source-contributions/"}
   jsonPayload, _ := json.Marshal(payload)
 
   request, _ := http.NewRequest("POST", "/shorten", bytes.NewBuffer(jsonPayload))
