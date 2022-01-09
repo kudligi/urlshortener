@@ -8,12 +8,13 @@ import (
 	"github.com/kudligi/urlshortener/data"
 	"github.com/kudligi/urlshortener/api"
 	"github.com/kudligi/urlshortener/utility"
-	"sync"
+	// "sync"
 )
 
 func main() {
 	r := mux.NewRouter()
-	store := data.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+	// store := data.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+	store := data.InMemoryDataStoreV2Plain{make(map[string]string), make(map[string]string)}
   service := data.DataServiceV2{&store, utility.GetRandomShortUrl}
 
 	router := &api.Router{service}

@@ -3,7 +3,6 @@ package data
 import (
   "testing"
   "github.com/stretchr/testify/assert"
-  "sync"
   "github.com/kudligi/urlshortener/utility"
 )
 
