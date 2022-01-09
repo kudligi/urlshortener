@@ -4,16 +4,6 @@ import (
   "errors"
 )
 
-
-type DataService interface {
-  GenerateShortUrlAndSave(string) (string, error)
-  GetLongUrl(string) (string, error)
-  LogAll()
-}
-
-
-
-
 type RandomShortUrlGenerator func() string
 
 type DataServiceV2 struct {
