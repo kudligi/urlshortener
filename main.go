@@ -34,5 +34,5 @@ func main() {
 	// go store.PersistMap()
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
 
-  http.ListenAndServe(":9090", loggedRouter)
+  http.ListenAndServe(":5000", loggedRouter)
 }

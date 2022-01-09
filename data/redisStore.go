@@ -2,7 +2,6 @@ package data
 
 import (
 	"github.com/gomodule/redigo/redis"
-  "context"
 )
 
 type RedisDataStore struct {
