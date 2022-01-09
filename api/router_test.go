@@ -13,7 +13,7 @@ import (
 
 
 func TestShortenEndpoint(t *testing.T){
-  payload := HandlerRequest{"google.com"}
+  payload := HandlerRequest{"https://www.infracloud.io/cloud-native-open-source-contributions/"}
   jsonPayload, _ := json.Marshal(payload)
 
   request, _ := http.NewRequest("POST", "/shorten", bytes.NewBuffer(jsonPayload))
@@ -26,7 +26,7 @@ func TestShortenEndpoint(t *testing.T){
 func GetRouter() *mux.Router {
   r := mux.NewRouter()
 
-  dataService := &data.InMemoryService{make(map[string]string),make(map[string]string)}
+  dataService := &data.InMemoryMapService{make(map[string]string),make(map[string]string)}
   router := &Router{dataService}
 
   r.HandleFunc("/shorten", router.ShortenUrl).Methods("POST")

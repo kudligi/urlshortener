@@ -7,6 +7,7 @@ import (
   "io/ioutil"
   "github.com/gorilla/mux"
   "github.com/kudligi/urlshortener/data"
+  "gopkg.in/go-playground/validator.v9"
 )
 
 
@@ -15,13 +16,18 @@ type Router struct {
 }
 
 type HandlerRequest struct {
-  Url string `json:"url"`
+  Url string `json:"url" validate:"required,url"`
 }
 
 type HandlerResponse struct {
   LongUrl string `json:"long_url"`
   ShortUrl string `json:"short_url"`
 }
+
+var (
+    v = validator.New()
+)
+
 
 //handler for POST /shorten
 func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
@@ -31,6 +37,10 @@ func (h *Router) ShortenUrl(w http.ResponseWriter, r *http.Request){
     panic(err)
   }
   err = json.Unmarshal(body, &requestBody)
+  if err != nil{
+    panic(err)
+  }
+  err = v.Struct(requestBody)
   if err != nil{
     panic(err)
   }
@@ -75,4 +85,8 @@ func (h *Router) Redirect(w http.ResponseWriter, r *http.Request){
     }
   longUrl, _ := h.DataStore.GetLongUrl(shortUrl)
   http.Redirect(w, r, longUrl, http.StatusSeeOther)
+}
+
+func (h *Router) LogAll(w http.ResponseWriter, r *http.Request){
+  h.DataStore.LogAll()
 }
