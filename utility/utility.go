@@ -21,7 +21,8 @@ func init(){
 
     size, ok := os.LookupEnv("SHORT_URL_SIZE")
     if !ok {
-      panic("SHORT_URL_SIZE not available in env")
+      urlSize = 8
+      return
     }
     urlSize, _ = strconv.Atoi(size)
 }

@@ -13,7 +13,6 @@ import (
   "sync"
 )
 
-
 func TestShortenEndpoint(t *testing.T){
   payload := ShortenRequest{"https://www.infracloud.io/cloud-native-open-source-contributions/"}
   jsonPayload, _ := json.Marshal(payload)
