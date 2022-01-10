@@ -10,11 +10,26 @@ DockerHub: https://hub.docker.com/repository/docker/kudligi97/urlshortener
 
  1. **POST** /shorten
     > **Request Body Schema**
+
     > long_url  string, required, url
 
     > **Response Body Schema**
+
     > long_url  string, url
-    >short_url string, url
+
+    > short_url string, url
+
+    Sample request body : {
+    	"long_url" : "https://go.dev/blog/error-handling-and-go"
+    }
+
+    Sample response body : {
+
+    "long_url": "https://go.dev/blog/error-handling-and-go",
+
+    "short_url": "http://localhost:4000/38TH3nxg"
+
+    }
 
 same long url will always result in same short url within app lifetime.  
 
@@ -25,8 +40,11 @@ same long url will always result in same short url within app lifetime.
     > **Request Body Schema**
 
     > **Response Body Schema**
+
     > long_url  string, url
-    >short_url string, url
+
+    > short_url string, url
+
 
 
 ## CI/CD
@@ -56,6 +74,8 @@ Minimal tests for:
  - Router
  - DataService
  - RandomUrl Utility
+
+ TODO : Add more automated testig
 
 ## Load Testing
 Load Tested using apache bench tool to simulate conncurrent requests under load conditions to validate correctness and measure impace on performance as implimentation was changing.
