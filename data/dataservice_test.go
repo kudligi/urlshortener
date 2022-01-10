@@ -4,11 +4,12 @@ import (
   "testing"
   "github.com/stretchr/testify/assert"
   "github.com/kudligi/urlshortener/utility"
+	"github.com/kudligi/urlshortener/data/datastore"
   "sync"
 )
 
 func TestAddShortUrlSuccessV2(t *testing.T){
-  store := InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+  store := datastore.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
   service := DataServiceV2{&store, utility.GetRandomShortUrl}
 
   short, err := service.GenerateShortUrl("https://www.infracloud.io/cloud-native-open-source-contributions/")
@@ -24,7 +25,7 @@ func staticUrlGenerator() string {
 }
 
 func TestAddShortUrlCollisionV2(t *testing.T){
-  store := InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+  store := datastore.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
   service := DataServiceV2{&store, staticUrlGenerator}
 
   short, err := service.GenerateShortUrl("https://www.infracloud.io/cloud-native-open-source-contributions/")
