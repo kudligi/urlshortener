@@ -112,7 +112,7 @@ Server will be listening on http://localhost:4000/
 ## Standalone In Memory
 To Start the application with 3 webcontainers:
 
-> $ docker run -p 9090:4000 kudligi97/urlshortener:standalone
+> $ docker run -p 4000:9090 kudligi97/urlshortener:standalone
 
 Server will be listening on http://localhost:4000/
 
