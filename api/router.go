@@ -24,7 +24,7 @@ var (
 func init(){
   _, ok := os.LookupEnv("APP_DOMAIN")
   if !ok {
-    domain = "http://localhost:9090/"
+    domain = "http://localhost:4000/"
     return
   }
   domain = os.Getenv("APP_DOMAIN")
