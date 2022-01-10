@@ -43,8 +43,8 @@ Setup Continuous build-test-promote using github actions.
 	 - In Memory Data Store:
 		 - Plain Maps
 		 - sync.Map
-		 - Map _ RwMutex
-		 - Map with persistent checkpoints at intervals
+		 - Map + RwMutex
+		 - Map + persistence checkpoints at intervals
 	- Utility to generate well distributed random short urls
 		- Seeding RNG with cryptographically secure random number
 	- Redis based Data Store  
@@ -82,7 +82,9 @@ https://httpd.apache.org/docs/2.4/programs/ab.html
 ## Distributed version
 To Start the application with 3 webcontainers:
 > $ git clone https://github.com/kudligi/urlshortener
+
 > $ cd urlshortner
+
 > $ docker compose up --scale web=3
 
 Server will be listening on http://localhost:4000/
@@ -99,6 +101,7 @@ Server will be listening on http://localhost:4000/
 To Start the application with 3 webcontainers:
 
 > $ docker volume create my-vol
+>
 > $ docker run -p 4000:9090 -v my-vol:/go/app/persist kudligi97/urlshortener:standalone-persistent
 
 Server will be listening on http://localhost:4000/
