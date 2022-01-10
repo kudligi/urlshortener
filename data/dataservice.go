@@ -2,12 +2,13 @@ package data
 
 import (
   "errors"
+  "github.com/kudligi/urlshortener/data/datastore"
 )
 
 type RandomShortUrlGenerator func() string
 
 type DataServiceV2 struct {
-  DataStore DataStoreV2
+  DataStore datastore.DataStoreV2
   GenerateUrl RandomShortUrlGenerator
 }
 

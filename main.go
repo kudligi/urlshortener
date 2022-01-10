@@ -6,18 +6,19 @@ import (
   "github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/kudligi/urlshortener/data"
-	"github.com/kudligi/urlshortener/api"
+	"github.com/kudligi/urlshortener/data/datastore"
+  "github.com/kudligi/urlshortener/api"
 	"github.com/kudligi/urlshortener/utility"
 	"sync"
 )
 
 func main() {
 	r := mux.NewRouter()
-	// store := data.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
-	// store := data.InMemoryDataStoreV2Plain{make(map[string]string), make(map[string]string)}
-	store := data.InMemoryDataStoreV2RWMutex{make(map[string]string), make(map[string]string), new(sync.RWMutex)}
+	// store := datastore.InMemoryDataStoreV2{new(sync.Map), new(sync.Map)}
+	// store := datastore.InMemoryDataStoreV2Plain{make(map[string]string), make(map[string]string)}
+	store := datastore.InMemoryDataStoreV2RWMutex{make(map[string]string), make(map[string]string), new(sync.RWMutex)}
 
-	// store := data.EventuallyPersistentDataStorage{make(map[string]string), make(map[string]string), new(sync.RWMutex), make(chan bool)}
+	// store := datastore.EventuallyPersistentDataStorage{make(map[string]string), make(map[string]string), new(sync.RWMutex), make(chan bool)}
 	// store.LoadCache()
 
 	// store := data.RedisDataStore{}
