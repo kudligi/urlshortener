@@ -1,7 +1,5 @@
 # urlshortener
 
-Assignment-InfraCloud
-
 Github: https://github.com/kudligi/urlshortener
 
 DockerHub: https://hub.docker.com/repository/docker/kudligi97/urlshortener
